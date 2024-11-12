@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "475088015638",
+    "project_id": "freshers-8af04",
+    "storage_bucket": "freshers-8af04.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:475088015638:android:e0cd56cbc7bd64c327c037",
+        "android_client_info": {
+          "package_name": "com.example.freshers"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSZ9cv3b7OghpRmDEyuU01JybgKuwcVIU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
