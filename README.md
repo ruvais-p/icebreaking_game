@@ -29,7 +29,7 @@ To make the UX memorable and fun:
 3. Run the app.
 
 ## Contributing
-We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md) for more details.
+<!-- We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md) for more details. -->
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
