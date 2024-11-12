@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:freshers/userpage/quizpage.dart';
 
 class UserVerificationPage extends StatefulWidget {
+  const UserVerificationPage({super.key});
+
   @override
   _UserVerificationPageState createState() => _UserVerificationPageState();
 }
@@ -59,7 +61,7 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
     } else {
       // If userId is not found, show an error
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("User not found. Please register.")),
+        const SnackBar(content: Text("User not found. Please register.")),
       );
     }
   }
@@ -67,7 +69,7 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("User Verification")),
+      appBar: AppBar(title: const Text("User Verification")),
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -75,16 +77,16 @@ class _UserVerificationPageState extends State<UserVerificationPage> {
           children: [
             TextField(
               controller: nameController,
-              decoration: InputDecoration(labelText: "Name"),
+              decoration: const InputDecoration(labelText: "Name"),
             ),
             TextField(
               controller: emailController,
-              decoration: InputDecoration(labelText: "Email"),
+              decoration: const InputDecoration(labelText: "Email"),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _verifyUser, // Call _verifyUser on button press
-              child: Text("Continue..."),
+              child: const Text("Continue..."),
             ),
           ],
         ),

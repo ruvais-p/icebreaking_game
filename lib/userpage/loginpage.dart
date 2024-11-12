@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // Show a success message
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('User created successfully')),
+          const SnackBar(content: Text('User created successfully')),
         );
         setState(() {
           _iswaiting = true;
@@ -96,13 +96,13 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _iswaiting
-          ? Text(
+          ? const Text(
               "Waiting page.....",
               style: TextStyle(color: Colors.red, fontSize: 30),
             )
           : SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -126,13 +126,13 @@ class _LoginPageState extends State<LoginPage> {
                           labelText: 'Option 2', controller: option2Controller),
                       CustomTextField(
                           labelText: 'Option 3', controller: option3Controller),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       _isLoading
-                          ? CircularProgressIndicator() // Show loader if loading
+                          ? const CircularProgressIndicator() // Show loader if loading
                           : ElevatedButton(
                               onPressed:
                                   _submitData, // Call _submitData function
-                              child: Text('Submit'),
+                              child: const Text('Submit'),
                             ),
                     ],
                   ),
@@ -147,7 +147,7 @@ class CustomTextField extends StatelessWidget {
   final String labelText;
   final TextEditingController controller;
 
-  CustomTextField({required this.labelText, required this.controller});
+  const CustomTextField({super.key, required this.labelText, required this.controller});
 
   @override
   Widget build(BuildContext context) {

@@ -7,7 +7,7 @@ class QuizPage extends StatefulWidget {
   final String email;
   final String userId; // Pass user ID along with email
 
-  QuizPage({required this.email, required this.userId});
+  const QuizPage({super.key, required this.email, required this.userId});
 
   @override
   _QuizPageState createState() => _QuizPageState();
@@ -20,7 +20,7 @@ class _QuizPageState extends State<QuizPage> {
   bool isLoading = true;
   List<Map> questions = [];
   int currentQuestionIndex = 0;
-  Set<String> answeredQuestions = Set<String>(); // Track answered questions
+  Set<String> answeredQuestions = <String>{}; // Track answered questions
 
   @override
   void initState() {
@@ -145,25 +145,25 @@ class _QuizPageState extends State<QuizPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Quiz")),
+      appBar: AppBar(title: const Text("Quiz")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<Map>(
           stream: _questionController.stream,
           builder: (context, snapshot) {
             if (isLoading) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
 
             // Handle loading state
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
 
             // Handle the case when no more questions are available
             if (snapshot.hasData &&
                 snapshot.data!['no_more_questions'] == true) {
-              return Center(child: Text("No more questions available."));
+              return const Center(child: Text("No more questions available."));
             }
 
             // Handle the state when data is available (quiz ongoing)
@@ -174,23 +174,23 @@ class _QuizPageState extends State<QuizPage> {
                 children: [
                   Text(
                     question['question'],
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ...question['options'].map<Widget>((option) {
                     return ListTile(
                       title: Text(option),
                       onTap: () => _checkAnswer(option, question),
                     );
                   }).toList(),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Text("Score: $score"),
                 ],
               );
             }
 
             // Default case (shouldn't hit unless there's an issue)
-            return Center(child: Text("An error occurred."));
+            return const Center(child: Text("An error occurred."));
           },
         ),
       ),

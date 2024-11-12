@@ -11,7 +11,7 @@ import 'package:provider/provider.dart'; // Import ScoreboardPage
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: FirebaseOptions(
+    options: const FirebaseOptions(
       apiKey: "AIzaSyAT9nOFo3DuDMksnTBtdKCgwS7LCLXwk4I",
       appId: "1:475088015638:web:ab5aa1ad2800104627c037",
       messagingSenderId: "475088015638",
@@ -20,7 +20,7 @@ void main() async {
     ),
   );
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -68,13 +68,13 @@ class _MyAppState extends State<MyApp> {
   Widget _buildHomePage() {
     switch (gameState) {
       case 'login':
-        return LoginPage(); // Show LoginPage
+        return const LoginPage(); // Show LoginPage
       case 'start':
         return UserVerificationPage(); // Show UserVerificationPage
       case 'end':
         return ScoreboardPage(); // Show ScoreboardPage
       default:
-        return Center(
+        return const Center(
             child:
                 CircularProgressIndicator()); // Loading indicator if state is unknown
     }

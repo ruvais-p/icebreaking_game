@@ -2,6 +2,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class AdminPage extends StatefulWidget {
+  const AdminPage({super.key});
+
   @override
   _AdminPageState createState() => _AdminPageState();
 }
@@ -76,7 +78,7 @@ class _AdminPageState extends State<AdminPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Admin Page")),
+      appBar: AppBar(title: const Text("Admin Page")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -86,26 +88,26 @@ class _AdminPageState extends State<AdminPage> {
               children: [
                 ElevatedButton(
                   onPressed: () => _updateGameState('login'),
-                  child: Text("Login"),
+                  child: const Text("Login"),
                 ),
                 ElevatedButton(
                   onPressed: () => _updateGameState('start'),
-                  child: Text("Start"),
+                  child: const Text("Start"),
                 ),
                 ElevatedButton(
                   onPressed: () => _updateGameState('end'),
-                  child: Text("End"),
+                  child: const Text("End"),
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text("Current Game State: $gameState",
-                style: TextStyle(fontSize: 18)),
-            SizedBox(height: 20),
+                style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 20),
             // Show scoreboard if game state is 'start' or 'end'
             if (gameState == 'start' || gameState == 'end')
               isLoading
-                  ? CircularProgressIndicator()
+                  ? const CircularProgressIndicator()
                   : Expanded(
                       child: ListView.builder(
                         itemCount: users.length,

@@ -2,6 +2,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class ScoreboardPage extends StatefulWidget {
+  const ScoreboardPage({super.key});
+
   @override
   _ScoreboardPageState createState() => _ScoreboardPageState();
 }
@@ -42,13 +44,13 @@ class _ScoreboardPageState extends State<ScoreboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Scoreboard")),
+      appBar: AppBar(title: const Text("Scoreboard")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : users.isEmpty
-                ? Center(child: Text("No users found"))
+                ? const Center(child: Text("No users found"))
                 : ListView.builder(
                     itemCount: users.length,
                     itemBuilder: (context, index) {
