@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,8 +11,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  // Controllers for each field
   final TextEditingController emailController = TextEditingController();
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController semesterController = TextEditingController();
@@ -26,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   bool _iswaiting = false;
 
-  Future<void> _submitData() async {
+   Future<void> _submitData() async {
     String question;
     if (_formKey.currentState!.validate()) {
       question =
@@ -92,81 +91,163 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  // Previous methods remain the same (_submitData)...
+
+  Widget _buildStyledTextField(String labelText, TextEditingController controller, {bool isNumeric = false}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          labelText,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF3A78C2),
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+          inputFormatters: isNumeric ? [FilteringTextInputFormatter.digitsOnly] : null,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            hintText: 'Enter $labelText',
+            hintStyle: TextStyle(color: Colors.grey.shade400),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: const BorderSide(
+                color: Color(0xFF3A78C2),
+                width: 2,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: const BorderSide(
+                color: Color(0xFF4D9FFF),
+                width: 2,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: const BorderSide(
+                color: Colors.red,
+                width: 2,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: const BorderSide(
+                color: Colors.red,
+                width: 2,
+              ),
+            ),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Please enter $labelText';
+            }
+            return null;
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+
+  Widget _buildSubmitButton() {
+    return Container(
+      width: double.infinity,
+      height: 56,
+      decoration: BoxDecoration(
+        color: const Color(0xFF4D9FFF),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: const Color(0xFF3A78C2),
+          width: 3,
+        ),
+      ),
+      child: ElevatedButton(
+        onPressed: _isLoading ? null : _submitData,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        child: _isLoading
+            ? const CircularProgressIndicator(color: Colors.white)
+            : const Text(
+                'Submit',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _iswaiting
-          ? const Text(
-              "Waiting page.....",
-              style: TextStyle(color: Colors.red, fontSize: 30),
-            )
-          : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      CustomTextField(
-                          labelText: 'Email', controller: emailController),
-                      CustomTextField(
-                          labelText: 'Full Name',
-                          controller: fullNameController),
-                      CustomTextField(
-                          labelText: 'Semester',
-                          controller: semesterController),
-                      CustomTextField(
-                          labelText: 'Question',
-                          controller: questionController),
-                      CustomTextField(
-                          labelText: 'Answer', controller: answerController),
-                      CustomTextField(
-                          labelText: 'Option 1', controller: option1Controller),
-                      CustomTextField(
-                          labelText: 'Option 2', controller: option2Controller),
-                      CustomTextField(
-                          labelText: 'Option 3', controller: option3Controller),
-                      const SizedBox(height: 20),
-                      _isLoading
-                          ? const CircularProgressIndicator() // Show loader if loading
-                          : ElevatedButton(
-                              onPressed:
-                                  _submitData, // Call _submitData function
-                              child: const Text('Submit'),
-                            ),
-                    ],
+      body: Container(
+        color: const Color(0xFFFDF6E3),
+        child: SafeArea(
+          child: _iswaiting
+              ? const Center(
+                  child: Text(
+                    "Waiting page.....",
+                    style: TextStyle(
+                      color: Color(0xFF3A78C2),
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              : SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Create Quiz",
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              _buildStyledTextField('Email', emailController),
+                              _buildStyledTextField('Full Name', fullNameController),
+                              _buildStyledTextField('Semester', semesterController, isNumeric: true),
+                              _buildStyledTextField('Question', questionController),
+                              _buildStyledTextField('Answer', answerController),
+                              _buildStyledTextField('Option 1', option1Controller),
+                              _buildStyledTextField('Option 2', option2Controller),
+                              _buildStyledTextField('Option 3', option3Controller),
+                              const SizedBox(height: 24),
+                              _buildSubmitButton(),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-    );
-  }
-}
-
-class CustomTextField extends StatelessWidget {
-  final String labelText;
-  final TextEditingController controller;
-
-  const CustomTextField({super.key, required this.labelText, required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: labelText,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
         ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter $labelText';
-          }
-          return null;
-        },
       ),
     );
   }

@@ -1,11 +1,10 @@
 import 'dart:async';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class QuizPage extends StatefulWidget {
   final String email;
-  final String userId; // Pass user ID along with email
+  final String userId;
 
   const QuizPage({super.key, required this.email, required this.userId});
 
@@ -16,11 +15,11 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   final DatabaseReference database = FirebaseDatabase.instance.ref();
   late StreamController<Map> _questionController;
-  int score = 0; // The initial score will be fetched from Firebase
+  int score = 0;
   bool isLoading = true;
   List<Map> questions = [];
   int currentQuestionIndex = 0;
-  Set<String> answeredQuestions = <String>{}; // Track answered questions
+  Set<String> answeredQuestions = <String>{};
 
   @override
   void initState() {
@@ -29,7 +28,6 @@ class _QuizPageState extends State<QuizPage> {
     _loadData();
   }
 
-  // Load both the questions and user's score from the database
   Future<void> _loadData() async {
     try {
       // Fetch the user's data from the database
@@ -108,6 +106,12 @@ class _QuizPageState extends State<QuizPage> {
 
   // Check the answer, update score, and load the next random question
   Future<void> _checkAnswer(String selectedAnswer, Map question) async {
+  // Get the current gameState from the database
+  final gameStateSnapshot = await database.child("gameState").get();
+  final gameState = gameStateSnapshot.value;
+
+  // Proceed only if the gameState is "start"
+  if (gameState == "start") {
     if (selectedAnswer == question['answer']) {
       score += 4;
     } else {
@@ -122,7 +126,13 @@ class _QuizPageState extends State<QuizPage> {
 
     // Move to the next question (loop through the shuffled list)
     _showNextQuestion();
+  } else {
+    // Notify the user that the game is not in progress
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Game is not active currently')),
+    );
   }
+}
 
   // Method to update score in Firebase
   Future<void> _updateScoreInDatabase() async {
@@ -136,64 +146,133 @@ class _QuizPageState extends State<QuizPage> {
     }
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _questionController.close(); // Close the StreamController
+  Widget _buildOptionButton(String option, int index, Map question) {
+    final List<Color> buttonColors = [
+      const Color(0xFFFF69B4),  // Pink
+      const Color(0xFF90EE90),  // Green
+      const Color(0xFFFFD700),  // Gold
+      const Color(0xFF4D9FFF),  // Blue
+    ];
+    
+    final List<Color> borderColors = [
+      const Color(0xFFD4527A),  // Darker Pink
+      const Color(0xFF6CB76C),  // Darker Green
+      const Color(0xFFD4B400),  // Darker Gold
+      const Color(0xFF3A78C2),  // Darker Blue
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: InkWell(
+        onTap: () => _checkAnswer(option, question),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(
+            vertical: 16,
+            horizontal: 24,
+          ),
+          decoration: BoxDecoration(
+            color: buttonColors[index],
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: borderColors[index],
+              width: 3,
+            ),
+          ),
+          child: Text(
+            "${String.fromCharCode(65 + index)}) $option",
+            style: const TextStyle(
+              fontSize: 18,
+              color: Colors.black,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Quiz")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: StreamBuilder<Map>(
-          stream: _questionController.stream,
-          builder: (context, snapshot) {
-            if (isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+      body: Container(
+        color: const Color(0xFFFDF6E3), // Cream background color
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: StreamBuilder<Map>(
+              stream: _questionController.stream,
+              builder: (context, snapshot) {
+                if (isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            // Handle loading state
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-            // Handle the case when no more questions are available
-            if (snapshot.hasData &&
-                snapshot.data!['no_more_questions'] == true) {
-              return const Center(child: Text("No more questions available."));
-            }
+                if (snapshot.hasData && snapshot.data!['no_more_questions'] == true) {
+                  return const Center(child: Text("No more questions available."));
+                }
 
-            // Handle the state when data is available (quiz ongoing)
-            if (snapshot.hasData) {
-              final question = snapshot.data!;
+                if (snapshot.hasData) {
+                  final question = snapshot.data!;
 
-              return Column(
-                children: [
-                  Text(
-                    question['question'],
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  ...question['options'].map<Widget>((option) {
-                    return ListTile(
-                      title: Text(option),
-                      onTap: () => _checkAnswer(option, question),
-                    );
-                  }).toList(),
-                  const SizedBox(height: 20),
-                  Text("Score: $score"),
-                ],
-              );
-            }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Quiz",
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      Text(
+                        question['question'],
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      ...List.generate(
+                        question['options'].length,
+                        (index) => _buildOptionButton(
+                          question['options'][index],
+                          index,
+                          question,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: Text(
+                          "Score: $score",
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
 
-            // Default case (shouldn't hit unless there's an issue)
-            return const Center(child: Text("An error occurred."));
-          },
+                return const Center(child: Text("An error occurred."));
+              },
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _questionController.close();
+    super.dispose();
   }
 }
