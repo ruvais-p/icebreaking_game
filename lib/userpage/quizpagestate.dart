@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 
 class QuizState with ChangeNotifier {
   List<Map> questions = [];
-  Set<String> answeredQuestions = Set();
+  Set<String> answeredQuestions = {};
   int score = 0;
   bool isLoading = true;
 
@@ -34,7 +34,7 @@ Future<void> checkAnswer(String selectedAnswer, Map question, DatabaseReference 
   // Cancel previous debounce
   _debounceTimer?.cancel();
 
-  _debounceTimer = Timer(Duration(milliseconds: 200), () async {
+  _debounceTimer = Timer(const Duration(milliseconds: 200), () async {
     if (selectedAnswer == question['answer']) {
       score += 4;
     } else {

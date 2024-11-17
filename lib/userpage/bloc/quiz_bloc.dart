@@ -9,7 +9,7 @@ import 'package:firebase_database/firebase_database.dart';
 class QuizBloc extends Bloc<QuizEvent, QuizState> {
   final DatabaseReference database = FirebaseDatabase.instance.ref();
   List<Map> questions = [];
-  Set<String> answeredQuestions = Set();
+  Set<String> answeredQuestions = {};
   int score = 0;
 
   QuizBloc() : super(QuizInitial());
